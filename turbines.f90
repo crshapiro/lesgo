@@ -471,6 +471,7 @@ subroutine turbines_forcing()
 !
 ! This subroutine applies the drag-disk forcing
 !
+use param, only : inflow_velocity
 use sim_param, only : u,v,w, fxa,fya,fza
 use functions, only : linear_interp, interp_to_uv_grid
 implicit none
@@ -612,7 +613,7 @@ if (coord == 0) then
         !calculate total thrust force for each turbine  (per unit mass)
         !force is normal to the surface (calc from u_d_T, normal to surface)
         !write force to array that will be transferred via MPI
-        p_f_n = -0.5*p_Ct_prime*abs(p_u_d_T)*p_u_d_T/wind_farm%turbine(s)%thk
+        p_f_n = -0.5*p_Ct_prime*(inflow_velocity*cos(pi*wind_farm%turbine(s)%theta1/180._rprec))**2/wind_farm%turbine(s)%thk
         disk_force(s) = p_f_n
 
         !write values to file
